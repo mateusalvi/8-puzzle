@@ -1,14 +1,14 @@
 import nodo
 
+EnableDebugMain = False
+
 def main(): 
-    raiz = nodo.Nodo        #cria um novo nodo
+    raiz = nodo.Nodo(raizInput(), None, None, 1, None)        #cria um novo nodo
     
-    raiz.estado = raizInput()
-    nodo.sucessor(raiz.estado)
+    nodo.expande(raiz)
 
 
 #raizInput faz uma checagem para o tamanho da string de entrada, sem checar se é semanticamente válida
-#depois podemos generalizar melhor essa função
 def raizInput():
     entradaCorreta = False
     while entradaCorreta == False:
