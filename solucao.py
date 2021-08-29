@@ -8,7 +8,7 @@ class Nodo:
         self.estado = estado
         self.pai = pai
         self.acao = acao
-        self.custo = 1
+        self.custo = custo
         """
         Inicializa o nodo com os atributos recebidos
         :param estado:str, representacao do estado do 8-puzzle
@@ -53,7 +53,7 @@ def moverEsquerda(estadoLista, indexDoEspaco):
         novaEstadoLista[indexDoEspaco-1] = "_"
         
         estadoPalavra = "".join(novaEstadoLista)                            #transforma a lista de volta em palavra para usar na tupla de retorno
-        novoEstado =  ['esquerda', estadoPalavra]                           #cria tupla de retorno
+        novoEstado =  ('esquerda', estadoPalavra)                           #cria tupla de retorno
         
         return novoEstado
 
@@ -66,7 +66,7 @@ def moverDireita(estadoLista, indexDoEspaco):
         novaEstadoLista[indexDoEspaco+1] = "_"
         
         estadoPalavra = ''.join(novaEstadoLista)
-        novoEstado =  ["direita", estadoPalavra]
+        novoEstado =  ("direita", estadoPalavra)
         
         return novoEstado
 
@@ -79,7 +79,7 @@ def moverAbaixo(estadoLista, indexDoEspaco):
         novaEstadoLista[indexDoEspaco+3] = "_"
         
         estadoPalavra = ''.join(novaEstadoLista)
-        novoEstado =  ["abaixo", estadoPalavra]
+        novoEstado =  ("abaixo", estadoPalavra)
         
         return novoEstado
 
@@ -92,7 +92,7 @@ def moverAcima(estadoLista, indexDoEspaco):
         novaEstadoLista[indexDoEspaco-3] = "_"
         
         estadoPalavra = ''.join(novaEstadoLista)
-        novoEstado =  ["acima", estadoPalavra]
+        novoEstado =  ("acima", estadoPalavra)
 
         return novoEstado
 
@@ -106,8 +106,8 @@ def expande(__nodo):
         #subList = __sucessores[i] #cria uma sublista com a tupla atual
         __acao = sublist[0] #list(map(operator.itemgetter(0), subList))
         __estado = sublist[1]
-        __pai = __nodo.estado
-        nodoFilho = Nodo(__estado, __pai, __acao, 1)
+        __custo = __nodo.custo + 1
+        nodoFilho = Nodo(__estado, __nodo, __acao, __custo)
         __filhos.append(nodoFilho)
         nodoFilho = None
 
@@ -117,7 +117,7 @@ def expande(__nodo):
         print(__filhos)
         print(" ")
         print("Conteúdos do primeiro filho:")
-        print("Estado:", __filhos[0].estado, "  Pai:", __filhos[0].pai, "  Ação:", __filhos[0].acao)
+        print("Estado:", __filhos[0].estado, "  Pai:", __filhos[0].pai, "  Ação:", __filhos[0].acao, "  Custo total:", __filhos[0].custo)
         print(" ")
     ###############
 
