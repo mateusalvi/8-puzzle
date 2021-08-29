@@ -4,12 +4,11 @@ import operator
 EnableDebugNodo = True
 
 class Nodo:
-    def __init__(self, estado, pai, acao, custo, filhos):
+    def __init__(self, estado, pai, acao, custo):
         self.estado = estado
         self.pai = pai
         self.acao = acao
         self.custo = 1
-        self.filhos = filhos
         """
         Inicializa o nodo com os atributos recebidos
         :param estado:str, representacao do estado do 8-puzzle
@@ -108,21 +107,21 @@ def expande(__nodo):
         __acao = sublist[0] #list(map(operator.itemgetter(0), subList))
         __estado = sublist[1]
         __pai = __nodo.estado
-        nodoFilho = Nodo(__estado, __pai, __acao, 1, None)
+        nodoFilho = Nodo(__estado, __pai, __acao, 1)
         __filhos.append(nodoFilho)
         nodoFilho = None
-          
-    __nodo.filhos = __filhos
 
     #####DEBUG#####
     if EnableDebugNodo:
         print("NODOS FILHOS DE " + __nodo.estado + ":")
-        print(__nodo.filhos)
+        print(__filhos)
         print(" ")
         print("Conteúdos do primeiro filho:")
-        print("Estado:", __nodo.filhos[0].estado, "  Pai:", __nodo.filhos[0].pai, "  Ação:", __nodo.filhos[0].acao)
+        print("Estado:", __filhos[0].estado, "  Pai:", __filhos[0].pai, "  Ação:", __filhos[0].acao)
         print(" ")
     ###############
+
+    return __filhos
 
 def bfs(estado):
     """

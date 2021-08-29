@@ -1,11 +1,11 @@
-import nodo
+import solucao
 
 EnableDebugMain = False
 
 def main(): 
-    raiz = nodo.Nodo(raizInput(), None, None, 1, None)        #cria um novo nodo
+    raiz = solucao.Nodo(raizInput(), None, None, 1)        #cria um novo nodo
     
-    nodo.expande(raiz)
+    solucao.expande(raiz)
 
 
 #raizInput faz uma checagem para o tamanho da string de entrada, sem checar se é semanticamente válida
