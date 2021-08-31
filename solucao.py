@@ -1,6 +1,4 @@
-import numpy
-import operator
-import sys
+import time
 
 EnableDebugNodo = False
 meta = "12345678_"
@@ -136,6 +134,9 @@ def bfs(estado):
     :param estado: str
     :return:
     """
+    tempoDeInicio = time.time()
+    totalExpandidos = 0
+
     if not testaInsolução(estado):
         return None
 
@@ -153,13 +154,23 @@ def bfs(estado):
             return "Erro no BFS: lista vazia."
         estadoAtual = fronteira[0]
         fronteira.pop(0)
-        if estadoAtual.estado == meta: 
-            return encontraCaminho(estadoAtual)
+        if estadoAtual.estado == meta:
+            print("Tempo de execução BFS:", (time.time() - tempoDeInicio), "segundos") 
+            print("Nodos expandidos:", totalExpandidos)
+            caminho = encontraCaminho(estadoAtual)
+            print("Custo até a solução:", len(caminho))
+            print("")
+            return caminho
         if estadoAtual.estado not in explorados:
             explorados.add(estadoAtual.estado)
-            fronteira.extend(expande(estadoAtual))
+            expandidos = expande(estadoAtual)
+            totalExpandidos = totalExpandidos + len(expandidos)
+            fronteira.extend(expandidos)
     
 def dfs(estado):
+    tempoDeInicio = time.time()
+    totalExpandidos = 0
+    
     if testaInsolução(estado):
         pass
     else:
@@ -180,6 +191,7 @@ def dfs(estado):
 
     while flag == 0:
         listab = expande(nodev)
+        totalExpandidos = totalExpandidos + len(listab)
 
         k=0
         m=0
@@ -194,62 +206,13 @@ def dfs(estado):
 
         if(nodev.estado == meta):
             flag = 1
-            return encontraCaminho(nodev)
+            print("Tempo de execução DFS:", (time.time() - tempoDeInicio), "segundos") 
+            print("Nodos expandidos:", totalExpandidos)
+            caminho = encontraCaminho(nodev)
+            print("Custo até a solução:", len(caminho))
+            print("")
+            return caminho
             
-# Calcula a distancia de hamming
-def distHamming(nodo):
-    estado = nodo.estado
-    distancia = 0
-    for a, b in zip(estado, meta):
-        if a != b:
-            distancia += 1
-    return (distancia, nodo)
-
-def astar_hamming(estado):
-    """
-    Recebe um estado (string), executa a busca A* com h(n) = soma das distâncias de Hamming e
-    retorna uma lista de ações que leva do
-    estado recebido até o objetivo ("12345678_").
-    Caso não haja solução a partir do estado recebido, retorna None
-    :param estado: str
-    :return:
-    """
-    explorados = set()
-    fronteira = []
-    auxList = []
-    fronteira.append(Nodo(estado, None, None, 1))
-
-    if not fronteira: 
-            return "Erro no BFS: lista vazia."
-
-    while len(fronteira) > 0:
-        estadoAtual = fronteira[0]
-        fronteira.pop(0)
-        if estadoAtual.estado == meta: 
-            #return encontraCaminho(estadoAtual)
-            print("achou")
-            return
-        if estadoAtual.estado not in explorados:
-            explorados.add(estadoAtual.estado)
-            nodos_expandidos = expande(estadoAtual)
-            for filho in nodos_expandidos:
-                auxList.append(distHamming(filho))
-            auxList.sort(reverse=True)
-            while auxList:
-                fronteira.extend(auxList.pop()[1])
-
-def astar_manhattan(estado):
-    """
-    Recebe um estado (string), executa a busca A* com h(n) = soma das distâncias de Manhattan e
-    retorna uma lista de ações que leva do
-    estado recebido até o objetivo ("12345678_").
-    Caso não haja solução a partir do estado recebido, retorna None
-    :param estado: str
-    :return:
-    """
-    # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
-
 #Testa se o estado passado tem solução pelo princípio da paridade
 def testaInsolução(estado):
     estadoLista = list(estado)
@@ -269,7 +232,223 @@ def testaInsolução(estado):
     else:
         print("O estado inicial passado não tem solução")
         return False
+
+def distHamming(nodo):
+    estado = nodo.estado
+    distancia = 0
+    for a, b in zip(estado, meta):
+        if a != b:
+            distancia += 1
+
+    distancia = distancia + nodo.custo
+    listd = []
+    listd.append(distancia)
+    listd.append(nodo)
+    return listd
+
+def astar_hamming(estado):
+    tempoDeInicio = time.time()
+    totalExpandidos = 0
+
+    if not testaInsolução(estado):
+        return None
+
+    if estado == meta:
+        return []
+    else:
+        pass   
+    
+    sexp = set()
+    listab = [] 
+    nodev = Nodo(estado,None,None,0)
+    sexp.add(nodev.estado)
+    flag = 0
+
+    fronteira = []
+
+    while flag == 0:
+
+        listab = expande(nodev)
+        totalExpandidos = totalExpandidos + len(listab)
+
+        k=0
+        m=0
         
+        for k in range(len(listab)):    
+            if not(listab[k].estado in sexp):
+                fronteira.append(distHamming(listab[k]))    
+        
+        aux = []
+        t = 0
+        aux = fronteira[0]
+        for m in range(len(fronteira)):
+            if(fronteira[m][0] < aux[0]):
+                aux = fronteira[m]
+                t = m   
+
+        nodevl = []
+        nodevl = fronteira.pop(t)
+        nodev = nodevl[1]
+      
+        sexp.add(nodev.estado)
+
+        s = 0
+        if(nodev.estado == meta):
+            s = len(encontraCaminho(nodev))
+            print("Tempo de execução Manhattan:", (time.time() - tempoDeInicio), "segundos") 
+            print("Nodos expandidos:", totalExpandidos)
+            caminho = encontraCaminho(nodev)
+            print("Custo até a solução:", len(caminho))
+            print("")
+            return caminho  
+
+def mah(nodo):
+
+    k=0
+    i=0
+    j=0
+    
+    lin1 = []
+    lin2 = []
+    lin3 = []
+
+    strn = nodo.estado
+
+    for i in range(9):
+        if(i<3):
+            lin1.append(strn[i])
+        else:
+            if(i<6):
+                lin2.append(strn[i])
+            else:
+                lin3.append(strn[i])            
+        i = i + 1
+    
+    dist=0
+    for j in range(3):
+        if(lin1[j] == "1"):
+            dist = dist + abs(j - 0) + abs(0 - 0)
+        if(lin1[j] == "2"):
+            dist = dist + abs(j - 1) + abs(0 - 0)
+        if(lin1[j] == "3"):
+            dist = dist + abs(j - 2) + abs(0 - 0)
+        if(lin1[j] == "4"):
+            dist = dist + abs(j - 0) + abs(0 - 1)
+        if(lin1[j] == "5"):
+            dist = dist + abs(j - 1) + abs(0 - 1)
+        if(lin1[j] == "6"):
+            dist = dist + abs(j - 2) + abs(0 - 1)
+        if(lin1[j] == "7"):
+            dist = dist + abs(j - 0) + abs(0 - 2)
+        if(lin1[j] == "8"):
+            dist = dist + abs(j - 1) + abs(0 - 2)
+        if(lin1[j] == "_"):
+            dist = dist + abs(j - 2) + abs(0 - 2)
+
+    j=0
+    for j in range(3):
+        if(lin2[j] == "1"):
+            dist = dist + abs(j - 0) + abs(1 - 0)
+        if(lin2[j] == "2"):
+            dist = dist + abs(j - 1) + abs(1 - 0)
+        if(lin2[j] == "3"):
+            dist = dist + abs(j - 2) + abs(1 - 0)
+        if(lin2[j] == "4"):
+            dist = dist + abs(j - 0) + abs(1 - 1)
+        if(lin2[j] == "5"):
+            dist = dist + abs(j - 1) + abs(1 - 1)
+        if(lin2[j] == "6"):
+            dist = dist + abs(j - 2) + abs(1 - 1)
+        if(lin2[j] == "7"):
+            dist = dist + abs(j - 0) + abs(1 - 2)
+        if(lin2[j] == "8"):
+            dist = dist + abs(j - 1) + abs(1 - 2)
+        if(lin2[j] == "_"):
+            dist = dist + abs(j - 2) + abs(1 - 2)
+
+    j=0
+    for j in range(3):
+        if(lin3[j] == "1"):
+            dist = dist + abs(j - 0) + abs(2 - 0)
+        if(lin3[j] == "2"):
+            dist = dist + abs(j - 1) + abs(2 - 0)
+        if(lin3[j] == "3"):
+            dist = dist + abs(j - 2) + abs(2 - 0)
+        if(lin3[j] == "4"):
+            dist = dist + abs(j - 0) + abs(2 - 1)
+        if(lin3[j] == "5"):
+            dist = dist + abs(j - 1) + abs(2 - 1)
+        if(lin3[j] == "6"):
+            dist = dist + abs(j - 2) + abs(2 - 1)
+        if(lin3[j] == "7"):
+            dist = dist + abs(j - 0) + abs(2 - 2)
+        if(lin3[j] == "8"):
+            dist = dist + abs(j - 1) + abs(2 - 2)
+        if(lin3[j] == "_"):
+            dist = dist + abs(j - 2) + abs(2 - 2)
+
+    dist = dist + nodo.custo
+    listdm = []
+    listdm.append(dist)
+    listdm.append(nodo)
+    return listdm
+    
+def astar_manhattan(estado):
+    if not testaInsolução(estado):
+        return None
+
+    if estado == meta:
+        return []
+    else:
+        pass   
+    
+    tempoDeInicio = time.time()
+    totalExpandidos = 0
+    sexp = set()
+    listab = []
+    nodev = Nodo(estado,None,None,0)
+    sexp.add(nodev.estado)
+    flag = 0
+
+    fronteira = []
+
+    while flag == 0:
+
+        listab = expande(nodev)
+        totalExpandidos = totalExpandidos + len(listab)
+
+        k=0
+        m=0
+        
+        for k in range(len(listab)):    
+            if not(listab[k].estado in sexp):
+                fronteira.append(mah(listab[k]))    
+                        
+        aux = []
+        t = 0
+        aux = fronteira[0]
+        for m in range(len(fronteira)):
+            if(fronteira[m][0] < aux[0]):
+                aux = fronteira[m]
+                t = m   
+
+        nodevl = []
+        nodevl = fronteira.pop(t)
+        nodev = nodevl[1]
+      
+        sexp.add(nodev.estado)
+
+        s = 0
+        if(nodev.estado == meta):
+            s = len(encontraCaminho(nodev))
+            s = len(encontraCaminho(nodev))
+            print("Tempo de execução Hamming:", (time.time() - tempoDeInicio), "segundos") 
+            print("Nodos expandidos:", totalExpandidos)
+            caminho = encontraCaminho(nodev)
+            print("Custo até a solução:", len(caminho))
+            print("")
+            return caminho 
+
 def encontraCaminho(nodoMeta):
     caminho = []
 
