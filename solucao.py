@@ -19,6 +19,8 @@ class Nodo:
         :param custo:int, custo do caminho da raiz até este nó
         """
 
+def getEstado(self):
+    return self.estado
 
 #Recebe um estado (string) e retorna uma lista de tuplas (ação,estado atingido)
 #para cada ação possível no estado recebido.
@@ -134,36 +136,74 @@ def bfs(estado):
     :param estado: str
     :return:
     """
-    # substituir a linha abaixo pelo seu codigo
-    testaInsolução(estado)
-    explorados = []
-    fronteira = []
-    fronteira.append(estado)
+    if not testaInsolução(estado):
+        return None
 
-    while fronteira:
+    if estado == meta:
+        return []
+    else:
+        pass    
+
+    explorados = set()
+    fronteira = []
+    fronteira.append(Nodo(estado, None, None, 1))
+
+    while len(fronteira) > 0:
         if not fronteira: 
             return "Erro no BFS: lista vazia."
-        estadoAtual = fronteira.pop(0)
-        print("O estado atual é:", estadoAtual.estado)
-        if estadoAtual == meta: 
-            print("Estado final atingido, falta fazer o caminho")
-        if estadoAtual not in explorados:
-            explorados.append(estadoAtual)
+        estadoAtual = fronteira[0]
+        fronteira.pop(0)
+        if estadoAtual.estado == meta: 
+            return encontraCaminho(estadoAtual)
+        if estadoAtual.estado not in explorados:
+            explorados.add(estadoAtual.estado)
             fronteira.extend(expande(estadoAtual))
-
-
-
+    
 def dfs(estado):
-    """
-    Recebe um estado (string), executa a busca em PROFUNDIDADE e
-    retorna uma lista de ações que leva do
-    estado recebido até o objetivo ("12345678_").
-    Caso não haja solução a partir do estado recebido, retorna None
-    :param estado: str
-    :return:
-    """
-    # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
+    if testaInsolução(estado):
+        pass
+    else:
+        return None
+
+    if estado == meta:
+        return []
+    else:
+        pass
+
+    pilha = []
+    sexp = set()
+    lpath = []
+    listab = []
+    nodev = Nodo(estado,None,None,0)
+    sexp.add(nodev.estado)
+    flag = 0
+
+    while flag == 0:
+        listab = expande(nodev)
+
+        k=0
+        m=0
+
+        for k in range(len(listab)):
+            if not(listab[k].estado in sexp):
+                pilha.append(listab[k])
+        
+        nodev = pilha.pop()
+        sexp.add(nodev.estado)
+        lpath.append(nodev.acao)
+
+        if(nodev.estado == meta):
+            flag = 1
+            return encontraCaminho(nodev)
+            
+# Calcula a distancia de hamming
+def distHamming(nodo):
+    estado = nodo.estado
+    distancia = 0
+    for a, b in zip(estado, meta):
+        if a != b:
+            distancia += 1
+    return (distancia, nodo)
 
 def astar_hamming(estado):
     """
@@ -174,8 +214,29 @@ def astar_hamming(estado):
     :param estado: str
     :return:
     """
-    # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
+    explorados = set()
+    fronteira = []
+    auxList = []
+    fronteira.append(Nodo(estado, None, None, 1))
+
+    if not fronteira: 
+            return "Erro no BFS: lista vazia."
+
+    while len(fronteira) > 0:
+        estadoAtual = fronteira[0]
+        fronteira.pop(0)
+        if estadoAtual.estado == meta: 
+            #return encontraCaminho(estadoAtual)
+            print("achou")
+            return
+        if estadoAtual.estado not in explorados:
+            explorados.add(estadoAtual.estado)
+            nodos_expandidos = expande(estadoAtual)
+            for filho in nodos_expandidos:
+                auxList.append(distHamming(filho))
+            auxList.sort(reverse=True)
+            while auxList:
+                fronteira.extend(auxList.pop()[1])
 
 def astar_manhattan(estado):
     """
@@ -192,17 +253,29 @@ def astar_manhattan(estado):
 #Testa se o estado passado tem solução pelo princípio da paridade
 def testaInsolução(estado):
     estadoLista = list(estado)
+    estadoLista.remove('_')
     paridade = 0
 
-    for atual in estado:
-        estadoLista.pop(0)
-        for subAtual in estadoLista:
-            if atual > subAtual:
+    k = 0
+    for k in range(len(estadoLista)):
+        m = k + 1
+        while m < len(estadoLista):
+            if estadoLista[m] < estadoLista[k]:
                 paridade = paridade + 1
-    
+            m = m + 1
+
     if (paridade % 2) == 0:
-        pass
-    else: 
+        return True
+    else:
         print("O estado inicial passado não tem solução")
-        sys.exit(0)
+        return False
         
+def encontraCaminho(nodoMeta):
+    caminho = []
+
+    while nodoMeta.pai is not None:
+        caminho.append(nodoMeta.acao)
+        nodoMeta = nodoMeta.pai
+    caminho.reverse()
+
+    return caminho
