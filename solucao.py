@@ -1,7 +1,9 @@
 import numpy
 import operator
+import sys
 
-EnableDebugNodo = True
+EnableDebugNodo = False
+meta = "12345678_"
 
 class Nodo:
     def __init__(self, estado, pai, acao, custo):
@@ -133,7 +135,23 @@ def bfs(estado):
     :return:
     """
     # substituir a linha abaixo pelo seu codigo
-    raise NotImplementedError
+    testaInsolução(estado)
+    explorados = []
+    fronteira = []
+    fronteira.append(estado)
+
+    while fronteira:
+        if not fronteira: 
+            return "Erro no BFS: lista vazia."
+        estadoAtual = fronteira.pop(0)
+        print("O estado atual é:", estadoAtual.estado)
+        if estadoAtual == meta: 
+            print("Estado final atingido, falta fazer o caminho")
+        if estadoAtual not in explorados:
+            explorados.append(estadoAtual)
+            fronteira.extend(expande(estadoAtual))
+
+
 
 def dfs(estado):
     """
@@ -170,3 +188,21 @@ def astar_manhattan(estado):
     """
     # substituir a linha abaixo pelo seu codigo
     raise NotImplementedError
+
+#Testa se o estado passado tem solução pelo princípio da paridade
+def testaInsolução(estado):
+    estadoLista = list(estado)
+    paridade = 0
+
+    for atual in estado:
+        estadoLista.pop(0)
+        for subAtual in estadoLista:
+            if atual > subAtual:
+                paridade = paridade + 1
+    
+    if (paridade % 2) == 0:
+        pass
+    else: 
+        print("O estado inicial passado não tem solução")
+        sys.exit(0)
+        

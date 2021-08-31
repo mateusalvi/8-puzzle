@@ -5,7 +5,8 @@ EnableDebugMain = False
 def main(): 
     raiz = solucao.Nodo(raizInput(), None, None, 1)        #cria um novo nodo
     
-    solucao.expande(raiz)
+    solucao.bfs(raiz.estado)
+
 
 
 #raizInput faz uma checagem para o tamanho da string de entrada, sem checar se é semanticamente válida
