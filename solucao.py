@@ -137,7 +137,7 @@ def bfs(estado):
     tempoDeInicio = time.time()
     totalExpandidos = 0
 
-    if not testaInsolução(estado):
+    if not testaInsolucao(estado):
         return None
 
     if estado == meta:
@@ -171,7 +171,7 @@ def dfs(estado):
     tempoDeInicio = time.time()
     totalExpandidos = 0
     
-    if testaInsolução(estado):
+    if testaInsolucao(estado):
         pass
     else:
         return None
@@ -214,7 +214,7 @@ def dfs(estado):
             return caminho
             
 #Testa se o estado passado tem solução pelo princípio da paridade
-def testaInsolução(estado):
+def testaInsolucao(estado):
     estadoLista = list(estado)
     estadoLista.remove('_')
     paridade = 0
@@ -250,7 +250,7 @@ def astar_hamming(estado):
     tempoDeInicio = time.time()
     totalExpandidos = 0
 
-    if not testaInsolução(estado):
+    if not testaInsolucao(estado):
         return None
 
     if estado == meta:
@@ -295,7 +295,7 @@ def astar_hamming(estado):
         s = 0
         if(nodev.estado == meta):
             s = len(encontraCaminho(nodev))
-            print("Tempo de execução Manhattan:", (time.time() - tempoDeInicio), "segundos") 
+            print("Tempo de execução Hamming:", (time.time() - tempoDeInicio), "segundos") 
             print("Nodos expandidos:", totalExpandidos)
             caminho = encontraCaminho(nodev)
             print("Custo até a solução:", len(caminho))
@@ -394,7 +394,7 @@ def mah(nodo):
     return listdm
     
 def astar_manhattan(estado):
-    if not testaInsolução(estado):
+    if not testaInsolucao(estado):
         return None
 
     if estado == meta:
@@ -442,7 +442,7 @@ def astar_manhattan(estado):
         if(nodev.estado == meta):
             s = len(encontraCaminho(nodev))
             s = len(encontraCaminho(nodev))
-            print("Tempo de execução Hamming:", (time.time() - tempoDeInicio), "segundos") 
+            print("Tempo de execução Manhattan:", (time.time() - tempoDeInicio), "segundos") 
             print("Nodos expandidos:", totalExpandidos)
             caminho = encontraCaminho(nodev)
             print("Custo até a solução:", len(caminho))
