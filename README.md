@@ -1,6 +1,6 @@
 Integrantes:
 Mateus Luiz Salvi - 00229787 - Turma B
-Bruna Cagliari - 00290515 - Turma B
+Bruna Casagranda Cagliari - 00290515 - Turma B
 Pedro Henrique Augustin - 00246756 - Turma A
 
 
